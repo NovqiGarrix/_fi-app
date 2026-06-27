@@ -19,7 +19,6 @@ import { z } from "zod";
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { categoryCollection, expenseCollection } from "@/lib/db";
-import { sync } from "@/lib/sync";
 import { formatToRupiah, parseFromRupiah } from "@/utils/formatter";
 
 const addExpenseSchema = z.object({
@@ -71,8 +70,6 @@ export function AddExpense() {
           expense.category.id = data.categoryId;
         });
       });
-
-      await sync();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["daily-spendings"] });
@@ -108,7 +105,47 @@ export function AddExpense() {
       >
         <View className="flex-1 bg-black/60 items-center justify-center px-6">
           <View className="w-full rounded-2xl bg-[#1c1c1c] p-6">
-            <View>
+            <View className="mb-3">
+              <Text
+                style={{ fontFamily: Fonts.ManropeBold }}
+                className="text-white text-xl mb-3"
+              >
+                Category
+              </Text>
+
+              <Controller
+                control={form.control}
+                name="categoryId"
+                render={({ field: { onChange, value } }) => (
+                  <RNPickerSelect
+                    selectedValue={value}
+                    onValueChange={onChange}
+                    itemStyle={{ color: Colors.dark.text }}
+                    style={{ color: Colors.dark.text, marginTop: -13 }}
+                    dropdownIconColor={Colors.dark.text}
+                    mode="dropdown"
+                  >
+                    {categories?.map((category) => (
+                      <RNPickerSelect.Item
+                        key={category.id}
+                        label={category.name}
+                        value={category.id}
+                      />
+                    ))}
+                  </RNPickerSelect>
+                )}
+              />
+              {form.formState.errors.categoryId ? (
+                <Text
+                  style={{ fontFamily: Fonts.ManropeRegular }}
+                  className="text-red-400 mt-1"
+                >
+                  {form.formState.errors.categoryId.message}
+                </Text>
+              ) : null}
+            </View>
+
+            <View className="mb-4">
               <Text
                 style={{ fontFamily: Fonts.ManropeBold }}
                 className="text-white text-xl mb-3"
@@ -142,7 +179,7 @@ export function AddExpense() {
               ) : null}
             </View>
 
-            <View className="mt-4">
+            <View className="mb-8">
               <Text
                 style={{ fontFamily: Fonts.ManropeBold }}
                 className="text-white text-xl mb-3"
@@ -187,46 +224,6 @@ export function AddExpense() {
                   className="text-red-400 mt-1"
                 >
                   {form.formState.errors.amount.message}
-                </Text>
-              ) : null}
-            </View>
-
-            <View className="mt-4">
-              <Text
-                style={{ fontFamily: Fonts.ManropeBold }}
-                className="text-white text-xl mb-3"
-              >
-                Category
-              </Text>
-
-              <Controller
-                control={form.control}
-                name="categoryId"
-                render={({ field: { onChange, value } }) => (
-                  <RNPickerSelect
-                    selectedValue={value}
-                    onValueChange={onChange}
-                    itemStyle={{ color: Colors.dark.text }}
-                    style={{ color: Colors.dark.text, marginTop: -13 }}
-                    dropdownIconColor={Colors.dark.text}
-                    mode="dropdown"
-                  >
-                    {categories?.map((category) => (
-                      <RNPickerSelect.Item
-                        key={category.id}
-                        label={category.name}
-                        value={category.id}
-                      />
-                    ))}
-                  </RNPickerSelect>
-                )}
-              />
-              {form.formState.errors.categoryId ? (
-                <Text
-                  style={{ fontFamily: Fonts.ManropeRegular }}
-                  className="text-red-400 mt-1"
-                >
-                  {form.formState.errors.categoryId.message}
                 </Text>
               ) : null}
             </View>

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: it has to change when modal open/close */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDatabase } from "@nozbe/watermelondb/react";
@@ -17,7 +18,6 @@ import { Notifier, NotifierComponents } from "react-native-notifier";
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { incomeCollection } from "@/lib/db";
-import { sync } from "@/lib/sync";
 import { formatToRupiah, parseFromRupiah } from "@/utils/formatter";
 import { type AddIncomeSchema, addIncomeSchema } from "@/zod/income.zod";
 
@@ -46,8 +46,6 @@ export function AddIncome() {
           income.amount = data.amount;
         });
       });
-
-      await sync();
     },
     onSuccess: () => {
       form.reset();

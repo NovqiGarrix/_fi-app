@@ -96,13 +96,13 @@ export function DailySpendings() {
   }
 
   return (
-    <View className="mb-5">
+    <View className="mb-3">
       <View className="flex-row items-center justify-between">
         <Text
           style={{ fontFamily: Fonts.ManropeBold }}
           className="text-lg text-dark-tabIconDefault"
         >
-          Spent today
+          SPENT TODAY
         </Text>
 
         <TouchableOpacity

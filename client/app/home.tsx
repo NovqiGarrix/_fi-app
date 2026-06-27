@@ -7,6 +7,7 @@ import { DailySpendings } from "@/components/DailySpendings";
 import { ExpenseLabelCards } from "@/components/ExpenseLabelCards";
 import { FilterExpensesByCategoryForChart } from "@/components/FilterExpensesByCategoryForChart";
 import { Incomes } from "@/components/Incomes";
+import { MonthlyBudgetRemaining } from "@/components/MonthlyBudgetRemaining";
 import { Spendings } from "@/components/Spendings";
 import { SyncButton } from "@/components/SyncButton";
 import { TotalSpendings } from "@/components/TotalSpendings";
@@ -73,6 +74,8 @@ export default function HomeScreen() {
 
         <View className="mt-8">
           <DailySpendings />
+
+          <MonthlyBudgetRemaining />
 
           <View className="flex-row items-center justify-between">
             <Text

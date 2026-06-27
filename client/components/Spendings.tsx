@@ -17,7 +17,6 @@ import Animated, { FadeInUp } from "react-native-reanimated";
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { database, expenseCollection } from "@/lib/db";
-import { sync } from "@/lib/sync";
 import type Expense from "@/model/Expense.model";
 import { useSelectedCategoryForExpenseListFilter } from "@/stores/localState.store";
 import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
@@ -99,8 +98,6 @@ function SpendingsComp({ expenses }: SpendingsProps) {
           await expense.markAsDeleted(); // syncable
           // await expense.destroyPermanently(); // permanent
         });
-
-        await sync();
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["daily-spendings"] });

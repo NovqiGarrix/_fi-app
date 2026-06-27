@@ -8,10 +8,36 @@ import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
+import { LogBox } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NotifierWrapper } from 'react-native-notifier';
 import 'react-native-reanimated';
 import "../global.css";
+
+const IGNORED_LOGS = [
+  'setLayoutAnimationEnabledExperimental',
+  'VirtualizedLists should never be nested',
+];
+
+LogBox.ignoreLogs(IGNORED_LOGS);
+
+// LogBox only hides the in-app overlay; filter the Metro terminal output too.
+const shouldIgnore = (args: unknown[]) => {
+  const first = args[0];
+  return typeof first === 'string' && IGNORED_LOGS.some((msg) => first.includes(msg));
+};
+
+const originalWarn = console.warn;
+console.warn = (...args: unknown[]) => {
+  if (shouldIgnore(args)) return;
+  originalWarn(...args);
+};
+
+const originalError = console.error;
+console.error = (...args: unknown[]) => {
+  if (shouldIgnore(args)) return;
+  originalError(...args);
+};
 
 // import { useColorScheme } from '@/hooks/useColorScheme';
 
