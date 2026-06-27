@@ -1,15 +1,8 @@
-import { Colors } from "@/constants/Colors";
-import { Fonts } from "@/constants/Fonts";
-import { database, expenseCollection } from "@/lib/db";
-import Expense from "@/model/Expense.model";
-import { useSelectedCategoryForExpenseListFilter } from "@/stores/localState.store";
-import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
-import { formatMoney } from "@/utils/formatter";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Q } from "@nozbe/watermelondb";
 import { withObservables } from "@nozbe/watermelondb/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -21,6 +14,14 @@ import {
 } from "react-native";
 import { Notifier, NotifierComponents } from "react-native-notifier";
 import Animated, { FadeInUp } from "react-native-reanimated";
+import { Colors } from "@/constants/Colors";
+import { Fonts } from "@/constants/Fonts";
+import { database, expenseCollection } from "@/lib/db";
+import { sync } from "@/lib/sync";
+import type Expense from "@/model/Expense.model";
+import { useSelectedCategoryForExpenseListFilter } from "@/stores/localState.store";
+import { getStartOfMonth, getStartOfNextMonth } from "@/utils/date";
+import { formatMoney } from "@/utils/formatter";
 import { AddExpense } from "./AddExpense";
 import { SpendingCategoryFilter } from "./SpendingCategoryFilter";
 
@@ -61,6 +62,7 @@ function SpendingsComp({ expenses }: SpendingsProps) {
       filter === "all"
         ? expenses
         : expenses.filter((exp) => exp.category.id === filter);
+
     return Object.entries(
       _exp.reduce(
         (acc, expense) => {
@@ -73,10 +75,15 @@ function SpendingsComp({ expenses }: SpendingsProps) {
         },
         {} as Record<string, Expense[]>,
       ),
-    ).map(([_, expenses]) => ({
-      key: formatDate(expenses[0].createdAt),
-      expenses,
-    }));
+    )
+      .map(([_, expenses]) => ({
+        key: formatDate(expenses[0].createdAt),
+        expenses,
+      }))
+      .sort((exp) => {
+        const date = new Date(exp.expenses[0].createdAt);
+        return -date.getTime();
+      });
   }, [filter, expenses]);
 
   const { mutateAsync: deleteExpense, isPending: isDeletingExpense } =
@@ -92,6 +99,8 @@ function SpendingsComp({ expenses }: SpendingsProps) {
           await expense.markAsDeleted(); // syncable
           // await expense.destroyPermanently(); // permanent
         });
+
+        await sync();
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["daily-spendings"] });

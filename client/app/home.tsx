@@ -3,12 +3,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { BackHandler, Image, ScrollView, Text, View } from "react-native";
-import { BackupButton } from "@/components/BackupButton";
 import { DailySpendings } from "@/components/DailySpendings";
 import { ExpenseLabelCards } from "@/components/ExpenseLabelCards";
 import { FilterExpensesByCategoryForChart } from "@/components/FilterExpensesByCategoryForChart";
 import { Incomes } from "@/components/Incomes";
 import { Spendings } from "@/components/Spendings";
+import { SyncButton } from "@/components/SyncButton";
 import { TotalSpendings } from "@/components/TotalSpendings";
 import { Fonts } from "@/constants/Fonts";
 
@@ -68,7 +68,7 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          <BackupButton />
+          <SyncButton />
         </View>
 
         <View className="mt-8">
