@@ -11,13 +11,13 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://my-fiapp.fly.dev"
+        "EXPO_PUBLIC_API_URL": "https://api-fi-app.nvhub.my.id/health"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://my-fiapp.fly.dev"
+        "EXPO_PUBLIC_API_URL": "https://api-fi-app.nvhub.my.id/health"
       }
     }
   },
