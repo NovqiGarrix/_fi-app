@@ -65,11 +65,12 @@ function SpendingsComp({ expenses }: SpendingsProps) {
     return Object.entries(
       _exp.reduce(
         (acc, expense) => {
-          const date = String(new Date(expense.createdAt).getDate());
-          if (!acc[date]) {
-            acc[date] = [];
+          const date = new Date(expense.createdAt);
+          const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+          if (!acc[key]) {
+            acc[key] = [];
           }
-          acc[date].push(expense);
+          acc[key].push(expense);
           return acc;
         },
         {} as Record<string, Expense[]>,
@@ -77,12 +78,9 @@ function SpendingsComp({ expenses }: SpendingsProps) {
     )
       .map(([_, expenses]) => ({
         key: formatDate(expenses[0].createdAt),
-        expenses,
+        expenses: [...expenses].sort((a, b) => b.createdAt - a.createdAt),
       }))
-      .sort((exp) => {
-        const date = new Date(exp.expenses[0].createdAt);
-        return -date.getTime();
-      });
+      .sort((a, b) => b.expenses[0].createdAt - a.expenses[0].createdAt);
   }, [filter, expenses]);
 
   const { mutateAsync: deleteExpense, isPending: isDeletingExpense } =
