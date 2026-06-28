@@ -138,27 +138,43 @@ function SpendingsComp({ expenses }: SpendingsProps) {
         showsVerticalScrollIndicator={false}
         style={{ flexGrow: 0 }}
         ItemSeparatorComponent={() => <View className="h-7" />}
-        renderItem={({ item }) => (
-          <View>
-            <Text
-              style={{ fontFamily: Fonts.ManropeSemiBold }}
-              className="text-dark-tabIconDefault text-sm mb-3"
-            >
-              {item.key}
-            </Text>
+        renderItem={({ item }) => {
+          const totalAmount = item.expenses.reduce(
+            (total, acc) => (total += acc.amount),
+            0,
+          );
 
-            <View className="gap-3">
-              {item.expenses.map((exp, index) => (
-                <Spending
-                  setLongPressExpense={setLongPressExpense}
-                  item={exp}
-                  index={index}
-                  key={exp.id}
-                />
-              ))}
+          return (
+            <View>
+              <View className="flex flex-row items-center justify-between mb-3">
+                <Text
+                  style={{ fontFamily: Fonts.ManropeSemiBold }}
+                  className="text-dark-tabIconDefault text-sm"
+                >
+                  {item.key}
+                </Text>
+
+                <Text
+                  style={{ fontFamily: Fonts.ManropeBold }}
+                  className="text-dark-tabIconDefault text-sm"
+                >
+                  {formatMoney(totalAmount)}
+                </Text>
+              </View>
+
+              <View className="gap-3">
+                {item.expenses.map((exp, index) => (
+                  <Spending
+                    setLongPressExpense={setLongPressExpense}
+                    item={exp}
+                    index={index}
+                    key={exp.id}
+                  />
+                ))}
+              </View>
             </View>
-          </View>
-        )}
+          );
+        }}
       />
 
       <Modal
