@@ -13,7 +13,6 @@ import {
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { database } from "@/lib/db";
-import { sync } from "@/lib/sync";
 import type Category from "@/model/Category.model";
 import { nextLabelColor } from "@/utils/label-color";
 
@@ -43,17 +42,15 @@ export function CreateExpenseLabel() {
           category.color = color;
         });
       });
-
-      await sync();
     },
     onError: (error) => {
       console.error("Error creating label:", error);
       ToastAndroid.show(error.message, ToastAndroid.LONG);
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       setLabelName("");
       setShowCreateModal(false);
-      await queryClient.refetchQueries({ queryKey: ["categories"] });
+      queryClient.refetchQueries({ queryKey: ["categories"] });
     },
   });
 
